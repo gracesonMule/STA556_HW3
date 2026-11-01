@@ -1,0 +1,7 @@
+---
+title: "STA 556 HW3 Analysis Report"
+author: "Graceson Mule"
+format: html
+jupyter: python3
+---
+
