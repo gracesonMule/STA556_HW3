@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 ```
 
 ```{python}
-data_fpath = os.path.join('..', 'data', 'student_performance.csv')
+data_fpath = os.path.join('data', 'student_performance.csv')
 
 student_performance_df = pd.read_csv(data_fpath)
 
