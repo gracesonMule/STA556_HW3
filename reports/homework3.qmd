@@ -4,4 +4,84 @@ author: "Graceson Mule"
 format: html
 jupyter: python3
 ---
+## Part 1
 
+For this project, the student_performance.csv dataset will be analyzed. The response variable for this dataset is the `final_score`. The three predictors are `study_hours_per_week`, `attendance_pct`, and `prior_score`. `id` is the primary key.
+
+```{python}
+#| echo: false
+import os
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+```
+
+```{python}
+data_fpath = os.path.join('..', 'data', 'student_performance.csv')
+
+student_performance_df = pd.read_csv(data_fpath)
+
+display(student_performance_df.head())
+display(student_performance_df.shape)
+display(student_performance_df.dtypes)
+print(student_performance_df.isna().sum())
+print(student_performance_df['id'].is_unique)
+```
+
+The dataset contains `{python} student_performance_df.shape[0]` observations and `{python} student_performance_df.shape[1]` columns. The dataset contains 4 variables: 1 response and 3 predictors. The final variable is the key column, `id`, and is  unique. There are no missing values in the dataset.
+
+## Part 2
+
+```{python}
+predictors = student_performance_df[['study_hours_per_week', 'attendance_pct', 'prior_score']].to_numpy()
+
+y = student_performance_df[['final_score']].to_numpy()
+```
+
+```{python}
+means = predictors.mean(axis=0)
+sds = predictors.std(axis=0)
+
+Z = (predictors - means) / sds
+
+print(Z.mean(axis=0))
+print(Z.std(axis=0))
+```
+
+```{python}
+X = np.column_stack([np.ones(len(Z)), Z])
+```
+
+
+```{python}
+predictors_shape = predictors.shape
+Z_shape = Z.shape
+X_shape = X.shape
+y_shape = y.shape
+
+X_rank = np.linalg.matrix_rank(X)
+```
+
+The predictors have `{python} predictors_shape[0]` rows and `{python} predictors_shape[1]` columns.
+
+The standardize variables `Z` has `{python} Z_shape[0]` rows and `{python} Z_shape[1]` columns. Because `Z` is the standardized values of the predictors it has the same shape as the predictors.
+
+The `X` matrix has `{python} X_shape[0]` rows and `{python} X_shape[1]` columns, which is one more columns than `Z` because of the added intercept.
+
+The `y` vector has `{python} y_shape[0]` rows and `{python} y_shape[1]` column.
+
+The rank of `X` is `{python} int(X_rank)`. Meaning all `{python} X_shape[1]` columns are linearly independent.
+
+The `X` matrix and `y` vector must be compatible shapes in order to multiply them for least squares regression. The intercept term is included because the mean `final_score` is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read "when $x_i$ is 0" and instead be "when $x_i$ is at its mean". Broadcasting makes the standardization possible without the use of a loop because every value in `X` has the same operations being applied independently.
+
+## Part 3
+
+
+```{python}
+beta_hat, *_ = np.linalg.lstsq(X, y, rcond=None)
+```
+
+```{python}
+
+```
