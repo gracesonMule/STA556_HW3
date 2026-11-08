@@ -18,11 +18,16 @@ import matplotlib.pyplot as plt
 ```
 
 ```{python}
+#| echo: false
+#| output: asis
+
 data_fpath = os.path.join('data', 'student_performance.csv')
 
 student_performance_df = pd.read_csv(data_fpath)
+student_performance_df = student_performance_df.loc[
+                         student_performance_df['final_score'] <= 100]
 
-display(student_performance_df.head())
+print(student_performance_df.head().to_markdown(index=False))
 display(student_performance_df.shape)
 display(student_performance_df.dtypes)
 print(student_performance_df.isna().sum())
@@ -34,7 +39,8 @@ The dataset contains `{python} student_performance_df.shape[0]` observations and
 ## Part 2
 
 ```{python}
-predictors = student_performance_df[['study_hours_per_week', 'attendance_pct', 'prior_score']].to_numpy()
+predictors = student_performance_df[['study_hours_per_week', 
+                                     'attendance_pct', 'prior_score']].to_numpy()
 
 y = student_performance_df[['final_score']].to_numpy()
 ```
@@ -76,12 +82,88 @@ The rank of `X` is `{python} int(X_rank)`. Meaning all `{python} X_shape[1]` col
 The `X` matrix and `y` vector must be compatible shapes in order to multiply them for least squares regression. The intercept term is included because the mean `final_score` is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read "when $x_i$ is 0" and instead be "when $x_i$ is at its mean". Broadcasting makes the standardization possible without the use of a loop because every value in `X` has the same operations being applied independently.
 
 ## Part 3
-
-
 ```{python}
 beta_hat, *_ = np.linalg.lstsq(X, y, rcond=None)
+beta_hat
 ```
+
+The intercept of the model is `{python} np.round(beta_hat[0][0], 2).item()`. When all independent variables are at their means, the expected mean `final_score` is `{python} np.round(beta_hat[0][0], 2).item()`. When all other predictors are at their means, for every 1 increase in standard deviation in `study_hours_per_week`, we expect a `{python} np.round(beta_hat[1][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `attendence_pct`, we expect a `{python} np.round(beta_hat[2][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `prior_score`, we expect a `{python} np.round(beta_hat[3][0], 2).item()` increase in `final_score`. 
 
 ```{python}
-
+beta_hat_reshaped = beta_hat.reshape(-1,)
+largest_coef_index = beta_hat_reshaped[1:].argmax() + 1
+largest_coef_name = student_performance_df.iloc[:,largest_coef_index].name
+largest_coef = float(np.round(np.absolute(beta_hat_reshaped[1:].max()), 2))
 ```
+
+The predictor with the largest absolute value is `{python} largest_coef_name` with an absolute value of `{python} largest_coef`.
+
+
+```{python}
+fitted = X @ beta_hat
+residuals = y - fitted
+
+residuals.mean()
+rmse = np.sqrt(np.mean(residuals**2))
+print(residuals.mean(), rmse)
+```
+
+The product of `X` @ beta_hat results in the fitted values for `final_score` given the standardized values of the predictors. The intercept represents the estimated mean value of `final_score` when the effect of the standardized predictors are held at their means. If no factors are considered, then the `final_score` should be centered around the mean `final_score`. If it is not, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the the true value. When calculating the y fit it is important to use `X` @ beta_hat, not X * beta_hat. This is because the latter, X * beta_hat, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.
+
+## Part 4
+
+### QR Decomposition
+```{python}
+Q, R = np.linalg.qr(X)
+
+print(Q.shape, R.shape)
+
+print(np.allclose(Q @ R, X))
+```
+
+### SVD
+
+
+```{python}
+U, s, Vt = np.linalg.svd(
+    X,
+    full_matrices=False
+)
+```
+
+
+```{python}
+print(U.shape)
+print(s.shape)
+print(Vt.shape)
+```
+
+
+```{python}
+X_reconstructed = (U @ np.diag(s) @ Vt)
+
+print(np.allclose(X_reconstructed, X))
+```
+
+### Rank and Conditioning
+
+
+```{python}
+rank = np.linalg.matrix_rank(X)
+condition = np.linalg.cond(X)
+```
+
+The rank of X is `{python} rank.item()` and the condition number of X is `{python} np.round(condition, 4).item()    `.
+
+#### Condition Number of Unstandardized Predictors
+
+```{python}
+X_raw = np.column_stack([
+np.ones(len(predictors)),
+predictors
+])
+
+raw_cond = np.linalg.cond(X_raw)
+```
+
+The condition number of unstandardized X is `{python} np.round(raw_cond, 4).item()`.
