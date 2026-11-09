@@ -22,7 +22,6 @@ import matplotlib.pyplot as plt
 #| output: asis
 
 data_fpath = os.path.join('data', 'student_performance.csv')
-
 student_performance_df = pd.read_csv(data_fpath)
 student_performance_df = student_performance_df.loc[
                          student_performance_df['final_score'] <= 100]
@@ -108,7 +107,7 @@ rmse = np.sqrt(np.mean(residuals**2))
 print(residuals.mean(), rmse)
 ```
 
-The product of `X` @ beta_hat results in the fitted values for `final_score` given the standardized values of the predictors. The intercept represents the estimated mean value of `final_score` when the effect of the standardized predictors are held at their means. If no factors are considered, then the `final_score` should be centered around the mean `final_score`. If it is not, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the the true value. When calculating the y fit it is important to use `X` @ beta_hat, not X * beta_hat. This is because the latter, X * beta_hat, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.
+The product of `X @ beta_hat` results in the fitted values for `final_score` given the standardized values of the predictors. The intercept represents the estimated mean value of `final_score` when the effect of the standardized predictors are held at their means. If no factors are considered, then the `final_score` should be centered around the mean `final_score`. If it is not, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the the true value. When calculating the y fit it is important to use `X @ beta_hat`, not `X * beta_hat`. This is because the latter, `X * beta_hat`, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.
 
 ## Part 4
 
@@ -153,7 +152,7 @@ rank = np.linalg.matrix_rank(X)
 condition = np.linalg.cond(X)
 ```
 
-The rank of X is `{python} rank.item()` and the condition number of X is `{python} np.round(condition, 4).item()    `.
+The rank of X is `{python} rank.item()` and the condition number of X is `{python} np.round(condition, 4).item()`.
 
 #### Condition Number of Unstandardized Predictors
 
@@ -164,6 +163,20 @@ predictors
 ])
 
 raw_cond = np.linalg.cond(X_raw)
+Q.shape
 ```
 
 The condition number of unstandardized X is `{python} np.round(raw_cond, 4).item()`.
+
+It is `{python} np.allclose(X_reconstructed, X)` that Q @ R is approximately X. This is important because it verifies that X can be represented as matices Q and R. It is also `{python} np.allclose(np.transpose(Q) @ Q, np.identity(Q.shape[1]))` that Q.T @ Q is approximately I, which verifies that Q has orthonormal columns. The singular values tell us the strength about the direction of the data. Larger singular values indicated a larger direction, indicating the corresponding $\mathbf{v_i}$ holds a large amount of information of the original X. The largest singular value of the standardized X is $\sigma_1 =$ `{python} np.round(s[0], 4).item()`. The weakest is $\sigma_4 =$ `{python} np.round(s[3], 4).item()`. The condition number represents the ratio between $\sigma_1$ and $min(\sigma_i)$, which reveals how much stronger $\sigma_1$ is in comparison to $min(\sigma_i)$. If this number is large it suggests that some predictors hold a much smaller amount of information of the data in comparison to others, and possibly suggests multicollinearity. The condition number before standardization (`{python} np.round(raw_cond, 4).item()`) is much larger than the standardized condition number (`{python} np.round(condition, 4).item()`) because of the scale of units. Some measurements naturally produce much larger numbers than others, which can lead to a smaller measurement looking like noise compared to a larger one making it harder to determine redundacny in the data. In the case of the student performance data, the rank of the standardized X (`{python} rank.item()`) equals the number of predictors (`{python} X_shape[1]`) and the condition number (`{python} np.round(condition, 4).item()`) is small indicating that there is no evidence of severe near-redundancy among predictors.
+
+
+## Part 5 — Reproducibility and numerical-computing reflection
+
+Clean execution matters for a computational report because you cannot hand somebody broken or messy code and expect the other person to understand what the script does or how to fix it; the code should execute without complication. The code should not depend on hidden notebook state because the notebook cells should be executed in order. A cell executing properly should not rely on another cell that comes after to be execute first. This creates confusion and requires the user to read carefully and not run things out of order. Similarly, the code should execute flawlessly after restarting the kernel to ensure that results are not influenced by cached variables that should not exist.
+
+When fitting a linear model, `np.linalg.lstq()` is preferable to $(X^TX)^{-1}X^Ty$ as it is less error prone, requires only a single line, and finds the fit by using SVD. The use of SVD means that X is never squared or inverted, resulting in higher precision because a computer can only store so many floating point values. Squaring a large/long number can result in the computation becoming numerically unstable. Additionally, the problem of floating point precision can mean that checks for exact equality for QR and SVD reconstruction may return false, which is why np.allclose() is preferable.
+
+The condition number is an important diagnostic step as it can reveal redundancy but only if the data is on the same scale. If the data is not on the same scale then large numbers dominate and explode the condition number making it harder to distinguish if there is redundancy among predictors. If the data is standardized then a high condition number is an indicator of redundant predictors.
+
+Throughout this report all numbers and statistics reported have been reported using code cells that do not require me to manually retype anything if values change. This is a reproducibility practice that I will continue to use in the future because it will save me time if I need to change anything in my computation and be less error prone because I do not need to manually update values.
