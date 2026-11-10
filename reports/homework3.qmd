@@ -140,7 +140,7 @@ Q_orthonormal = np.allclose(Q.T @ Q, np.eye(Q.shape[1]))
 
 ```
 
-The shape of Q is `{python} Q_shape`. The shape of R is `{python} R.shape`. It is `{python} QR_close_to_X` that Q @ R is approximately X. It is also `{python} Q_orthonormal` that Q.T @ Q is approximately $I$.
+The shape of Q is `{python} Q.shape`. The shape of R is `{python} R.shape`. It is `{python} QR_close_to_X` that Q @ R is approximately X. It is also `{python} Q_orthonormal` that Q.T @ Q is approximately $I$.
 
 ### SVD
 
