@@ -2,3 +2,4 @@
 /.quarto/
 **/*.quarto_ipynb
 /reports/homework3_files/*
+.DS_Store
