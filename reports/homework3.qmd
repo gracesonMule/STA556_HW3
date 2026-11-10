@@ -37,11 +37,12 @@ col_types = student_performance_df.dtypes.to_dict()
 col_types = ", ".join(f"{key}={value}" for key, value in col_types.items())
 ```
 
-For this project, the student_performance.csv dataset will be analyzed. The goal of this project is to fit and diagnose a linear model to the data using matrix computation. The dataset contains `{python} n_row` observations and `{python} n_col` columns. The dataset contains `{python} na_sum.item()` NA values. The columns of the dataset include: `{python} columns`. The columns have the following types: `{python} col_types`. `id` is the primary key of the dataset, represents the student id, and it `{python} "is" if id_is_unique else "is not"` unique.
+For this project, the student_performance.csv dataset will be analyzed. The goal of this project is to fit and diagnose a linear model to the data using matrix computation. The dataset contains `{python} n_row` observations and `{python} n_col` columns. The dataset contains `{python} na_sum.item()` NA values. The dataset did contain `final_score` values greater than 100 that were removed. The columns of the dataset include: `{python} columns`. The columns have the following types: `{python} col_types`. `id` is the primary key of the dataset, represents the student id, and it `{python} "is" if id_is_unique else "is not"` unique.
 
 The response variable for this dataset is the `final_score`. The three predictors are `study_hours_per_week`, `attendance_pct`, and `prior_score`. The head of the dataset is as follows:
 ```{python} 
 #| echo: false
+#| output: asis
 print(student_performance_df.head().to_markdown(index=False))
 ```
 
@@ -83,15 +84,15 @@ X_rank = np.linalg.matrix_rank(X)
 
 The predictors have `{python} predictors_shape[0]` rows and `{python} predictors_shape[1]` columns.
 
-The standardize variables `Z` has `{python} Z_shape[0]` rows and `{python} Z_shape[1]` columns. Because `Z` is the standardized values of the predictors it has the same shape as the predictors. The values of `Z` are simply the values in `X` represented as z-scores.
+The standardized matrix `Z` has `{python} Z_shape[0]` rows and `{python} Z_shape[1]` columns. Because `Z` contains the standardized values of the predictors it has the same shape as the predictors. The values of `Z` are simply the predictor values represented as z-scores.
 
-The `X` matrix has `{python} X_shape[0]` rows and `{python} X_shape[1]` columns, which is one more columns than `Z` because of the added intercept.
+The `X` matrix has `{python} X_shape[0]` rows and `{python} X_shape[1]` columns, which is one more column than `Z` because of the added intercept.
 
 The `y` vector has `{python} y_shape[0]` rows and `{python} y_shape[1]` column.
 
 The rank of `X` is `{python} X_rank.item()`. Meaning all `{python} X_shape[1]` columns are linearly independent.
 
-The `X` matrix and `y` vector must be compatible shapes in order to multiply them for least squares regression. The number of responses must be equal to the number of observations. The intercept term is included because the mean `final_score` is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read "when $x_i$ is 0" and instead be "when $x_i$ is at its mean". Standardizing the variables also puts the variables on the same scale, preventing one variable from dominiating simply because of its scale. Broadcasting makes the standardization possible without the use of a loop because every value in `X` has the same operations being applied independently.
+The `X` matrix and `y` vector must be compatible shapes in order to multiply them for least squares regression. The number of responses must be equal to the number of observations. The intercept term is included because the mean `final_score` is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read "when $x_i$ is 0" and instead be "when $x_i$ is at its mean". Standardizing the variables also puts the variables on the same scale, preventing one variable from dominating simply because of its scale. Broadcasting makes the standardization possible without the use of a loop because every value in `Z` has the same operations being applied independently.
 
 ## Part 3 Least squares
 ```{python}
@@ -101,15 +102,15 @@ beta_hat, *_ = np.linalg.lstsq(X, y, rcond=None)
 intercept = beta_hat[0][0]
 ```
 
-The intercept of the model is `{python} np.round(intercept, 2).item()`. When all independent variables are at their means, the expected `final_score` is `{python} np.round(intercept, 2).item()`. When all other predictors are at their means, for every 1 increase in standard deviation in `study_hours_per_week`, we expect a `{python} np.round(beta_hat[1][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `attendence_pct`, we expect a `{python} np.round(beta_hat[2][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `prior_score`, we expect a `{python} np.round(beta_hat[3][0], 2).item()` increase in `final_score`. 
+The intercept of the model is `{python} np.round(intercept, 2).item()`. When all independent variables are at their means, the expected `final_score` is `{python} np.round(intercept, 2).item()`. When all other predictors are at their means, for every 1 increase in standard deviation in `study_hours_per_week`, we expect a `{python} np.round(beta_hat[1][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `attendance_pct`, we expect a `{python} np.round(beta_hat[2][0], 2).item()` increase in `final_score`. When all other predictors are at their means, for every 1 increase in standard deviation in `prior_score`, we expect a `{python} np.round(beta_hat[3][0], 2).item()` increase in `final_score`. 
 
 ```{python}
 #| echo: false
-
-beta_hat_reshaped = beta_hat.reshape(-1,)
-largest_coef_index = beta_hat_reshaped[1:].argmax() + 1
-largest_coef_name = student_performance_df.iloc[:,largest_coef_index].name
-largest_coef = float(np.round(np.absolute(beta_hat_reshaped[1:].max()), 2))
+predictor_names = ['study_hours_per_week', 'attendance_pct', 'prior_score']
+beta_hat_reshaped = beta_hat.reshape(-1,)[1:] # start at one to exclude intercept
+largest_coef_index = int(np.abs(beta_hat_reshaped).argmax())
+largest_coef_name = predictor_names[largest_coef_index]
+largest_coef = np.round(beta_hat_reshaped[largest_coef_index], 2)
 ```
 
 The predictor with the largest absolute value is `{python} largest_coef_name` with an absolute value of `{python} largest_coef`.
@@ -125,7 +126,7 @@ mse = np.mean(residuals**2)
 rmse = np.sqrt(mse)
 ```
 
-The product of `X @ beta_hat` results in the fitted values for `final_score` given the standardized values of the predictors. The intercept represents the estimated mean value of `final_score` when the effects of the standardized predictors are held at their means. If no factors are considered, then the `final_score` should be centered around the mean `final_score`, which in this model is estimated by the intercept `{python} np.round(intercept, 2).item()`. If the `final_score` is not centered, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the true value, which the means of the residuals itself does not because values above cancel out values below the fit. For example, the mean residual of this model is `{python} residuals.mean().item()`, howevr, the RMSE is much higher at `{python} np.round(rmse, 2).item()`. When calculating the y fit it is important to use `X @ beta_hat`, not `X * beta_hat`. This is because the latter, `X * beta_hat`, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.
+The product of `X @ beta_hat` results in the fitted values for `final_score` given the standardized values of the predictors. The intercept represents the estimated mean value of `final_score` when the effects of the standardized predictors are held at their means. If no factors are considered, then the `final_score` should be centered around the mean `final_score`, which in this model is estimated by the intercept `{python} np.round(intercept, 2).item()`. If the `final_score` is not centered, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the typical amount fitted values are from the true value, which the means of the residuals itself does not because values above cancel out values below the fit. For example, the mean residual of this model is `{python} residuals.mean().item()`, however, the RMSE is much higher at `{python} np.round(rmse, 2).item()`. When calculating the y fit it is important to use `X @ beta_hat`, not `X * beta_hat`. This is because the latter, `X * beta_hat`, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.
 
 ## Part 4 QR, SVD, and conditioning
 
@@ -133,9 +134,6 @@ The product of `X @ beta_hat` results in the fitted values for `final_score` giv
 ```{python}
 #| echo: false
 Q, R = np.linalg.qr(X)
-
-Q_shape = Q.shape
-R_shape = R.shape
 
 QR_close_to_X = np.allclose(Q @ R, X)
 Q_orthonormal = np.allclose(Q.T @ Q, np.eye(Q.shape[1]))
@@ -200,14 +198,20 @@ The condition number of unstandardized X is `{python} np.round(raw_cond, 4).item
 
 ### Part 4 Summary
 
-It is `{python} QR_close_to_X` that Q @ R is approximately X. This is important because it verifies that X can be represented as matices Q and R. It is also `{python} Q_orthonormal` that Q.T @ Q is approximately $I$, which verifies that Q has orthonormal columns. The singular values tell us the strength about the direction of the data. Larger singular values indicated a larger direction, indicating the corresponding $\mathbf{v_i}$ holds a large amount of information of the original X. The largest singular value of the standardized X is $\sigma_1 =$ `{python} np.round(s[0], 4).item()`. The weakest is $\sigma_4 =$ `{python} np.round(s[-1], 4).item()`. The condition number represents the ratio between $\sigma_1$ and $min(\sigma_i)$, which reveals how much stronger $\sigma_1$ is in comparison to $min(\sigma_i)$. If this number is large it suggests that some predictors hold a much smaller amount of information of the data in comparison to others, and possibly suggests multicollinearity or redundancy. The condition number before standardization (`{python} np.round(raw_cond, 4).item()`) is much larger than the standardized condition number (`{python} np.round(condition, 4).item()`) because of the scale of units. Some measurements naturally produce much larger numbers than others, which can cause a smaller measurement to look insignificant compared to a larger one making it harder to determine redundacny in the data. In the case of the student performance data, the rank of the standardized X (`{python} rank.item()`) equals the number of predictors (`{python} X_shape[1]`) and the condition number (`{python} np.round(condition, 4).item()`) is small indicating that there is no evidence of severe near-redundancy among predictors.
+It is `{python} QR_close_to_X` that Q @ R is approximately X. This is important because it verifies that X can be represented as matrices Q and R. It is also `{python} Q_orthonormal` that Q.T @ Q is approximately $I$, which verifies that Q has orthonormal columns. 
+
+The singular values tell us the strength about the direction of the data. Larger singular values indicate a larger direction, indicating the corresponding $\mathbf{v_i}$ holds a large amount of information of the original X. The largest singular value of the standardized X is $\sigma_1 =$ `{python} np.round(s[0], 4).item()`. The weakest is $\sigma_4 =$ `{python} np.round(s[-1], 4).item()`. The condition number represents the ratio between $\sigma_1$ and $min(\sigma_i)$, which reveals how much stronger $\sigma_1$ is in comparison to $min(\sigma_i)$. If this number is large it suggests that some predictors hold a much smaller amount of information of the data in comparison to others, and possibly suggests multicollinearity or redundancy. 
+
+The condition number before standardization (`{python} np.round(raw_cond, 4).item()`) is much larger than the standardized condition number (`{python} np.round(condition, 4).item()`) because of the scale of units. Some measurements naturally produce much larger numbers than others, which can cause a smaller measurement to look insignificant compared to a larger one making it harder to determine redundancy in the data. 
+
+In the case of the student performance data, the rank of the standardized X (`{python} rank.item()`) equals the number of columns (`{python} X_shape[1]`) and the condition number (`{python} np.round(condition, 4).item()`) is small indicating that there is no evidence of severe near-redundancy among predictors.
 
 
 ## Part 5 — Reproducibility and numerical-computing reflection
 
-Clean execution matters for a computational report because you cannot hand somebody broken or messy code and expect the other person to understand what the script does or how to fix it; the code should execute without complication. The code should not depend on hidden notebook state because the notebook cells should be executed in order. A cell that executes properly should not rely on another cell that comes after to be execute first. This creates confusion and requires the user to read carefully and not run things out of order. Similarly, the code should execute flawlessly after restarting the kernel to ensure that results are not influenced by cached variables that should not exist.
+Clean execution matters for a computational report because you cannot hand somebody broken or messy code and expect the other person to understand what the script does or how to fix it; the code should execute without complication and read almost like a book. The code should not depend on a hidden notebook state because the notebook cells should be executed in order. A cell that executes properly should not rely on another cell that comes after to be execute first. This creates confusion and requires the user to read carefully and not run things out of order. Similarly, the code should execute flawlessly after restarting the kernel to ensure that results are not influenced by cached variables that should not exist.
 
-When fitting a linear model, `np.linalg.lstq()` is preferable to $(X^TX)^{-1}X^Ty$ as it is less error prone, requires only a single line, and finds the fit by using SVD. The use of SVD means that X is never squared or inverted, resulting in higher precision because a computer can only store so many floating point values. Squaring a large/long number can result in the computation becoming numerically unstable. Additionally, the problem of floating point precision can mean that checks for exact equality for QR and SVD reconstruction may return false, which is why np.allclose() is preferable.
+When fitting a linear model, `np.linalg.lstsq()` is preferable to $(X^TX)^{-1}X^Ty$ as it is less error prone, requires only a single line, and finds the fit by using SVD. The use of SVD means that X is never squared or inverted, resulting in higher precision because a computer can only store so many floating point values. Squaring a large/long number can result in the computation becoming numerically unstable. Additionally, the problem of floating point precision can mean that checks for exact equality for QR and SVD reconstruction may return false, which is why np.allclose() is preferable.
 
 The condition number is an important diagnostic step as it can reveal redundancy but only if the data is on the same scale. If the data is not on the same scale then large numbers dominate and explode the condition number making it harder to distinguish if there is redundancy among predictors. If the data is standardized then a high condition number is an indicator of redundant predictors.
 
