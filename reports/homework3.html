@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,16 +10,10 @@
 
 <title>STA 556 HW3 Analysis Report</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -27,58 +21,24 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
 <script src="homework3_files/libs/clipboard/clipboard.min.js"></script>
 <script src="homework3_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="homework3_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="homework3_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="homework3_files/libs/quarto-html/popper.min.js"></script>
 <script src="homework3_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="homework3_files/libs/quarto-html/anchor.min.js"></script>
 <link href="homework3_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="homework3_files/libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="homework3_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="homework3_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="homework3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="homework3_files/libs/bootstrap/bootstrap-46cb404407a02244f453b9be432bb67e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="homework3_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -140,218 +100,68 @@ window.Quarto = {
 </header>
 
 
-<section id="part-1" class="level2">
-<h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
-<p>For this project, the student_performance.csv dataset will be analyzed. The response variable for this dataset is the <code>final_score</code>. The three predictors are <code>study_hours_per_week</code>, <code>attendance_pct</code>, and <code>prior_score</code>. <code>id</code> is the primary key.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 7%">
-<col style="width: 30%">
-<col style="width: 23%">
-<col style="width: 19%">
-<col style="width: 19%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">id</th>
-<th style="text-align: right;">study_hours_per_week</th>
-<th style="text-align: right;">attendance_pct</th>
-<th style="text-align: right;">prior_score</th>
-<th style="text-align: right;">final_score</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">70.44</td>
-<td style="text-align: right;">69.31</td>
-<td style="text-align: right;">84.63</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">4.79</td>
-<td style="text-align: right;">77.05</td>
-<td style="text-align: right;">95.89</td>
-<td style="text-align: right;">94.66</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">6.15</td>
-<td style="text-align: right;">81.81</td>
-<td style="text-align: right;">82.36</td>
-<td style="text-align: right;">92.11</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">8.35</td>
-<td style="text-align: right;">69.14</td>
-<td style="text-align: right;">64.04</td>
-<td style="text-align: right;">85.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">6.62</td>
-<td style="text-align: right;">69.53</td>
-<td style="text-align: right;">72.26</td>
-<td style="text-align: right;">93.22</td>
-</tr>
-</tbody>
-</table>
-<pre><code>(102, 5)</code></pre>
-<pre><code>id                        int64
-study_hours_per_week    float64
-attendance_pct          float64
-prior_score             float64
-final_score             float64
-dtype: object</code></pre>
-<p>id 0 study_hours_per_week 0 attendance_pct 0 prior_score 0 final_score 0 dtype: int64 True</p>
-<p>The dataset contains 102 observations and 5 columns. The dataset contains 4 variables: 1 response and 3 predictors. The final variable is the key column, <code>id</code>, and is unique. There are no missing values in the dataset.</p>
-</section>
-<section id="part-2" class="level2">
-<h2 class="anchored" data-anchor-id="part-2">Part 2</h2>
-<div id="a0c50025" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>predictors <span class="op">=</span> student_performance_df[[<span class="st">'study_hours_per_week'</span>, </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">'attendance_pct'</span>, <span class="st">'prior_score'</span>]].to_numpy()</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> student_performance_df[[<span class="st">'final_score'</span>]].to_numpy()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="b1c4778a" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> predictors.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sds <span class="op">=</span> predictors.std(axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> (predictors <span class="op">-</span> means) <span class="op">/</span> sds</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Z.mean(axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Z.std(axis<span class="op">=</span><span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="part-1-reproducible-report-and-data-description" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-reproducible-report-and-data-description">Part 1 Reproducible report and data description</h2>
+<p>For this project, the student_performance.csv dataset will be analyzed. The goal of this project is to fit and diagnose a linear model to the data using matrix computation. The dataset contains 102 observations and 5 columns. The dataset contains 0 NA values. The columns of the dataset include: id, study_hours_per_week, attendance_pct, prior_score, final_score. The columns have the following types: id=int64, study_hours_per_week=float64, attendance_pct=float64, prior_score=float64, final_score=float64. <code>id</code> is the primary key of the dataset, represents the student id, and it is unique.</p>
+<p>The response variable for this dataset is the <code>final_score</code>. The three predictors are <code>study_hours_per_week</code>, <code>attendance_pct</code>, and <code>prior_score</code>. The head of the dataset is as follows:</p>
+<div id="4308c9ed" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
-<pre><code>[ 2.02452434e-16 -2.89528750e-16 -4.95246545e-16]
-[1. 1. 1.]</code></pre>
+<pre><code>|   id |   study_hours_per_week |   attendance_pct |   prior_score |   final_score |
+|-----:|-----------------------:|-----------------:|--------------:|--------------:|
+|    1 |                   5    |            70.44 |         69.31 |         84.63 |
+|    3 |                   4.79 |            77.05 |         95.89 |         94.66 |
+|    4 |                   6.15 |            81.81 |         82.36 |         92.11 |
+|    5 |                   8.35 |            69.14 |         64.04 |         85.3  |
+|    6 |                   6.62 |            69.53 |         72.26 |         93.22 |</code></pre>
 </div>
 </div>
-<div id="0a0a45de" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.column_stack([np.ones(<span class="bu">len</span>(Z)), Z])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="a53405a5" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>predictors_shape <span class="op">=</span> predictors.shape</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Z_shape <span class="op">=</span> Z.shape</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>X_shape <span class="op">=</span> X.shape</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>y_shape <span class="op">=</span> y.shape</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>X_rank <span class="op">=</span> np.linalg.matrix_rank(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+</section>
+<section id="part-2-matrix-setup-and-standardization" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-matrix-setup-and-standardization">Part 2 Matrix setup and standardization</h2>
 <p>The predictors have 102 rows and 3 columns.</p>
-<p>The standardize variables <code>Z</code> has 102 rows and 3 columns. Because <code>Z</code> is the standardized values of the predictors it has the same shape as the predictors.</p>
+<p>The standardize variables <code>Z</code> has 102 rows and 3 columns. Because <code>Z</code> is the standardized values of the predictors it has the same shape as the predictors. The values of <code>Z</code> are simply the values in <code>X</code> represented as z-scores.</p>
 <p>The <code>X</code> matrix has 102 rows and 4 columns, which is one more columns than <code>Z</code> because of the added intercept.</p>
 <p>The <code>y</code> vector has 102 rows and 1 column.</p>
 <p>The rank of <code>X</code> is 4. Meaning all 4 columns are linearly independent.</p>
-<p>The <code>X</code> matrix and <code>y</code> vector must be compatible shapes in order to multiply them for least squares regression. The intercept term is included because the mean <code>final_score</code> is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read “when <span class="math inline">\(x_i\)</span> is 0” and instead be “when <span class="math inline">\(x_i\)</span> is at its mean”. Broadcasting makes the standardization possible without the use of a loop because every value in <code>X</code> has the same operations being applied independently.</p>
+<p>The <code>X</code> matrix and <code>y</code> vector must be compatible shapes in order to multiply them for least squares regression. The number of responses must be equal to the number of observations. The intercept term is included because the mean <code>final_score</code> is likely not 0. The predictors are standardized to center the variables around their mean. This allows for more direct comparison of coefficients. It also changes interpretations to no longer read “when <span class="math inline">\(x_i\)</span> is 0” and instead be “when <span class="math inline">\(x_i\)</span> is at its mean”. Standardizing the variables also puts the variables on the same scale, preventing one variable from dominiating simply because of its scale. Broadcasting makes the standardization possible without the use of a loop because every value in <code>X</code> has the same operations being applied independently.</p>
 </section>
-<section id="part-3" class="level2">
-<h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
-<div id="ee58f110" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>beta_hat, <span class="op">*</span>_ <span class="op">=</span> np.linalg.lstsq(X, y, rcond<span class="op">=</span><span class="va">None</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>beta_hat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="67">
-<pre><code>array([[91.11607843],
-       [ 2.40241523],
-       [ 0.53515661],
-       [ 2.67092642]])</code></pre>
-</div>
-</div>
-<p>The intercept of the model is 91.12. When all independent variables are at their means, the expected mean <code>final_score</code> is 91.12. When all other predictors are at their means, for every 1 increase in standard deviation in <code>study_hours_per_week</code>, we expect a 2.4 increase in <code>final_score</code>. When all other predictors are at their means, for every 1 increase in standard deviation in <code>attendence_pct</code>, we expect a 0.54 increase in <code>final_score</code>. When all other predictors are at their means, for every 1 increase in standard deviation in <code>prior_score</code>, we expect a 2.67 increase in <code>final_score</code>.</p>
-<div id="ee5096c9" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>beta_hat_reshaped <span class="op">=</span> beta_hat.reshape(<span class="op">-</span><span class="dv">1</span>,)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>largest_coef_index <span class="op">=</span> beta_hat_reshaped[<span class="dv">1</span>:].argmax() <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>largest_coef_name <span class="op">=</span> student_performance_df.iloc[:,largest_coef_index].name</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>largest_coef <span class="op">=</span> <span class="bu">float</span>(np.<span class="bu">round</span>(np.absolute(beta_hat_reshaped[<span class="dv">1</span>:].<span class="bu">max</span>()), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<section id="part-3-least-squares" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-least-squares">Part 3 Least squares</h2>
+<p>The intercept of the model is 91.12. When all independent variables are at their means, the expected <code>final_score</code> is 91.12. When all other predictors are at their means, for every 1 increase in standard deviation in <code>study_hours_per_week</code>, we expect a 2.4 increase in <code>final_score</code>. When all other predictors are at their means, for every 1 increase in standard deviation in <code>attendence_pct</code>, we expect a 0.54 increase in <code>final_score</code>. When all other predictors are at their means, for every 1 increase in standard deviation in <code>prior_score</code>, we expect a 2.67 increase in <code>final_score</code>.</p>
 <p>The predictor with the largest absolute value is prior_score with an absolute value of 2.67.</p>
-<div id="df45e348" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> X <span class="op">@</span> beta_hat</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> y <span class="op">-</span> fitted</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>residuals.mean()</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(np.mean(residuals<span class="op">**</span><span class="dv">2</span>))</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(residuals.mean(), rmse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>-7.662715777805002e-15 4.4197829973873155</code></pre>
-</div>
-</div>
-<p>The product of <code>X @ beta_hat</code> results in the fitted values for <code>final_score</code> given the standardized values of the predictors. The intercept represents the estimated mean value of <code>final_score</code> when the effect of the standardized predictors are held at their means. If no factors are considered, then the <code>final_score</code> should be centered around the mean <code>final_score</code>. If it is not, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the the true value. When calculating the y fit it is important to use <code>X @ beta_hat</code>, not <code>X * beta_hat</code>. This is because the latter, <code>X * beta_hat</code>, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.</p>
+<p>The product of <code>X @ beta_hat</code> results in the fitted values for <code>final_score</code> given the standardized values of the predictors. The intercept represents the estimated mean value of <code>final_score</code> when the effects of the standardized predictors are held at their means. If no factors are considered, then the <code>final_score</code> should be centered around the mean <code>final_score</code>, which in this model is estimated by the intercept 91.12. If the <code>final_score</code> is not centered, then this implies that something else is having an effect on the response and that the errors are not random. The RMSE reveals the average absolute value fitted values are from the true value, which the means of the residuals itself does not because values above cancel out values below the fit. For example, the mean residual of this model is 5.712206307091002e-15, howevr, the RMSE is much higher at 4.42. When calculating the y fit it is important to use <code>X @ beta_hat</code>, not <code>X * beta_hat</code>. This is because the latter, <code>X * beta_hat</code>, performs element-wise multiplication and not the cross-product, which is what is needed for least squares regression.</p>
 </section>
-<section id="part-4" class="level2">
-<h2 class="anchored" data-anchor-id="part-4">Part 4</h2>
+<section id="part-4-qr-svd-and-conditioning" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-qr-svd-and-conditioning">Part 4 QR, SVD, and conditioning</h2>
 <section id="qr-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="qr-decomposition">QR Decomposition</h3>
-<div id="edc5eda1" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Q, R <span class="op">=</span> np.linalg.qr(X)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Q.shape, R.shape)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.allclose(Q <span class="op">@</span> R, X))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(102, 4) (4, 4)
-True</code></pre>
-</div>
-</div>
+<p>The shape of Q is (102, 4). The shape of R is (4, 4). It is True that Q @ R is approximately X. It is also True that Q.T @ Q is approximately <span class="math inline">\(I\)</span>.</p>
 </section>
 <section id="svd" class="level3">
 <h3 class="anchored" data-anchor-id="svd">SVD</h3>
-<div id="14a7831e" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>U, s, Vt <span class="op">=</span> np.linalg.svd(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    X,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    full_matrices<span class="op">=</span><span class="va">False</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="380cdb9c" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(U.shape)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(s.shape)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Vt.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(102, 4)
-(4,)
-(4, 4)</code></pre>
-</div>
-</div>
-<div id="f66782b1" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>X_reconstructed <span class="op">=</span> (U <span class="op">@</span> np.diag(s) <span class="op">@</span> Vt)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.allclose(X_reconstructed, X))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>True</code></pre>
-</div>
-</div>
+<p>The shape of U is (102, 4). The shape of s is (4,). And the shape of Vt is (4, 4).</p>
+<p>The singular values of X are [12.128141805410834, 10.282493887466057, 10.099504938362077, 7.292358726918834].</p>
+<p>It is also True that the reconstructed X from SVD is <span class="math inline">\(\approx X\)</span>.</p>
 </section>
 <section id="rank-and-conditioning" class="level3">
 <h3 class="anchored" data-anchor-id="rank-and-conditioning">Rank and Conditioning</h3>
-<div id="ae1c2697" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> np.linalg.matrix_rank(X)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>condition <span class="op">=</span> np.linalg.cond(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<section id="rank" class="level4">
+<h4 class="anchored" data-anchor-id="rank">Rank</h4>
 <p>The rank of X is 4 and the condition number of X is 1.6631.</p>
+</section>
 <section id="condition-number-of-unstandardized-predictors" class="level4">
 <h4 class="anchored" data-anchor-id="condition-number-of-unstandardized-predictors">Condition Number of Unstandardized Predictors</h4>
-<div id="0b9fa495" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>X_raw <span class="op">=</span> np.column_stack([</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>np.ones(<span class="bu">len</span>(predictors)),</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>predictors</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>raw_cond <span class="op">=</span> np.linalg.cond(X_raw)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>Q.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="75">
-<pre><code>(102, 4)</code></pre>
-</div>
-</div>
 <p>The condition number of unstandardized X is 1513.065.</p>
-<p>It is True that Q @ R is approximately X. This is important because it verifies that X can be represented as matices Q and R. It is also True that Q.T @ Q is approximately I, which verifies that Q has orthonormal columns. The singular values tell us the strength about the direction of the data. Larger singular values indicated a larger direction, indicating the corresponding <span class="math inline">\(\mathbf{v_i}\)</span> holds a large amount of information of the original X. The largest singular value of the standardized X is <span class="math inline">\(\sigma_1 =\)</span> 12.1281. The weakest is <span class="math inline">\(\sigma_4 =\)</span> 7.2924. The condition number represents the ratio between <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(min(\sigma_i)\)</span>, which reveals how much stronger <span class="math inline">\(\sigma_1\)</span> is in comparison to <span class="math inline">\(min(\sigma_i)\)</span>. If this number is large it suggests that some predictors hold a much smaller amount of information of the data in comparison to others, and possibly suggests multicollinearity. The condition number before standardization (1513.065) is much larger than the standardized condition number (1.6631) because of the scale of units. Some measurements naturally produce much larger numbers than others, which can lead to a smaller measurement looking like noise compared to a larger one making it harder to determine redundacny in the data. In the case of the student performance data, the rank of the standardized X (4) equals the number of predictors (4) and the condition number (1.6631) is small indicating that there is no evidence of severe near-redundancy among predictors.</p>
 </section>
+</section>
+<section id="part-4-summary" class="level3">
+<h3 class="anchored" data-anchor-id="part-4-summary">Part 4 Summary</h3>
+<p>It is True that Q @ R is approximately X. This is important because it verifies that X can be represented as matices Q and R. It is also True that Q.T @ Q is approximately <span class="math inline">\(I\)</span>, which verifies that Q has orthonormal columns. The singular values tell us the strength about the direction of the data. Larger singular values indicated a larger direction, indicating the corresponding <span class="math inline">\(\mathbf{v_i}\)</span> holds a large amount of information of the original X. The largest singular value of the standardized X is <span class="math inline">\(\sigma_1 =\)</span> 12.1281. The weakest is <span class="math inline">\(\sigma_4 =\)</span> 7.2924. The condition number represents the ratio between <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(min(\sigma_i)\)</span>, which reveals how much stronger <span class="math inline">\(\sigma_1\)</span> is in comparison to <span class="math inline">\(min(\sigma_i)\)</span>. If this number is large it suggests that some predictors hold a much smaller amount of information of the data in comparison to others, and possibly suggests multicollinearity or redundancy. The condition number before standardization (1513.065) is much larger than the standardized condition number (1.6631) because of the scale of units. Some measurements naturally produce much larger numbers than others, which can cause a smaller measurement to look insignificant compared to a larger one making it harder to determine redundacny in the data. In the case of the student performance data, the rank of the standardized X (4) equals the number of predictors (4) and the condition number (1.6631) is small indicating that there is no evidence of severe near-redundancy among predictors.</p>
 </section>
 </section>
 <section id="part-5-reproducibility-and-numerical-computing-reflection" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-reproducibility-and-numerical-computing-reflection">Part 5 — Reproducibility and numerical-computing reflection</h2>
-<p>Clean execution matters for a computational report because you cannot hand somebody broken or messy code and expect the other person to understand what the script does or how to fix it; the code should execute without complication. The code should not depend on hidden notebook state because the notebook cells should be executed in order. A cell executing properly should not rely on another cell that comes after to be execute first. This creates confusion and requires the user to read carefully and not run things out of order. Similarly, the code should execute flawlessly after restarting the kernel to ensure that results are not influenced by cached variables that should not exist.</p>
+<p>Clean execution matters for a computational report because you cannot hand somebody broken or messy code and expect the other person to understand what the script does or how to fix it; the code should execute without complication. The code should not depend on hidden notebook state because the notebook cells should be executed in order. A cell that executes properly should not rely on another cell that comes after to be execute first. This creates confusion and requires the user to read carefully and not run things out of order. Similarly, the code should execute flawlessly after restarting the kernel to ensure that results are not influenced by cached variables that should not exist.</p>
 <p>When fitting a linear model, <code>np.linalg.lstq()</code> is preferable to <span class="math inline">\((X^TX)^{-1}X^Ty\)</span> as it is less error prone, requires only a single line, and finds the fit by using SVD. The use of SVD means that X is never squared or inverted, resulting in higher precision because a computer can only store so many floating point values. Squaring a large/long number can result in the computation becoming numerically unstable. Additionally, the problem of floating point precision can mean that checks for exact equality for QR and SVD reconstruction may return false, which is why np.allclose() is preferable.</p>
 <p>The condition number is an important diagnostic step as it can reveal redundancy but only if the data is on the same scale. If the data is not on the same scale then large numbers dominate and explode the condition number making it harder to distinguish if there is redundancy among predictors. If the data is standardized then a high condition number is an indicator of redundant predictors.</p>
 <p>Throughout this report all numbers and statistics reported have been reported using code cells that do not require me to manually retype anything if values change. This is a reproducibility practice that I will continue to use in the future because it will save me time if I need to change anything in my computation and be less error prone because I do not need to manually update values.</p>
