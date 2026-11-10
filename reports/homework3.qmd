@@ -113,7 +113,7 @@ largest_coef_name = predictor_names[largest_coef_index]
 largest_coef = np.round(beta_hat_reshaped[largest_coef_index], 2)
 ```
 
-The predictor with the largest absolute value is `{python} largest_coef_name` with an absolute value of `{python} largest_coef`.
+The predictor with the largest absolute value is `{python} largest_coef_name` with an absolute value of `{python} largest_coef.item()`.
 
 
 ```{python}
